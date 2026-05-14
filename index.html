@@ -782,6 +782,165 @@
       margin-top: 0.35rem;
     }
 
+    .assignees-panel__add .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .assignees-panel__name--with-avatar {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-width: 0;
+    }
+
+    .assignees-panel__name-edit {
+      margin: 0;
+      padding: 0.2rem 0.3rem;
+      border: none;
+      background: transparent;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .assignees-panel__name-edit:hover {
+      background: var(--list-row-hover);
+    }
+
+    .assignees-panel__name-edit:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .assignees-panel__name-edit .assignees-panel__name {
+      pointer-events: none;
+    }
+
+    .assignee-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+    }
+
+    .assignee-avatar--sm {
+      width: 1.35rem;
+      height: 1.35rem;
+      font-size: 0.62rem;
+    }
+
+    .assignee-avatar__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .assignee--chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .assignee--chip .assignee__name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .assignee-form__photo-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: nowrap;
+    }
+
+    .assignee-form__photo-actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.35rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .assignee-form__photo-pick {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.32rem 0.55rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .assignee-form__photo-pick .fa-fw {
+      margin-right: 0.28rem;
+      font-size: 0.85em;
+    }
+
+    .assignee-form__file-input--sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .assignee-form__photo-preview[role="button"] {
+      cursor: pointer;
+    }
+
+    .assignee-form__photo-preview[role="button"]:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .assignee-form__photo-preview {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .assignee-form__photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .assignee-form__photo-preview--empty i {
+      font-size: 0.95rem;
+      opacity: 0.65;
+    }
+
     .assignees-panel__input {
       flex: 1 1 180px;
       min-width: 0;
@@ -1053,6 +1212,10 @@
       z-index: 1100;
     }
 
+    .modal-backdrop--assignee {
+      z-index: 1050;
+    }
+
     .modal {
       width: min(100%, 420px);
       max-height: min(92vh, 640px);
@@ -1202,6 +1365,17 @@
       outline: none;
       border-color: rgba(59, 130, 246, 0.55);
       box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .task-form__field input.assignee-form__input--error {
+      border-color: var(--color-accent-red);
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.22);
+    }
+
+    .task-form__field input.assignee-form__input--error:focus {
+      outline: none;
+      border-color: var(--color-accent-red);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
     }
 
     #tf-priority {
@@ -1634,6 +1808,10 @@
     .assignee {
       font-weight: 500;
       color: var(--text);
+    }
+
+    .task-card__footer .assignee--chip {
+      justify-content: flex-end;
     }
 
     .view-stack {
@@ -2073,6 +2251,12 @@
       font-weight: 500;
       color: var(--text);
       white-space: nowrap;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .task-list__assignee .assignee--chip {
+      max-width: 100%;
     }
 
     .task-list__sep {
@@ -2467,16 +2651,8 @@
               </div>
             </details>
             <div class="assignees-panel__add">
-              <input
-                type="text"
-                id="assignee-new-input"
-                class="assignees-panel__input"
-                placeholder="Имя ответственного"
-                maxlength="80"
-                autocomplete="off"
-              />
               <button type="button" class="btn btn--primary" id="assignee-add-btn">
-                <i class="fa-solid fa-user-plus fa-fw" aria-hidden="true"></i>Добавить
+                <i class="fa-solid fa-user-plus fa-fw" aria-hidden="true"></i>Добавить ответственного
               </button>
             </div>
           </div>
@@ -2656,6 +2832,82 @@
     </div>
   </div>
 
+  <div class="modal-backdrop modal-backdrop--assignee" id="assignee-modal-backdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="assignee-modal-title">
+      <button type="button" class="modal__close" id="assignee-modal-close" aria-label="Закрыть">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <h2 class="modal__title" id="assignee-modal-title">Новый ответственный</h2>
+      <form id="assignee-form">
+        <div class="task-form__field">
+          <label for="af-first-name"><i class="fa-solid fa-user fa-fw" aria-hidden="true"></i>Имя</label>
+          <input
+            id="af-first-name"
+            name="firstName"
+            type="text"
+            maxlength="80"
+            autocomplete="given-name"
+            placeholder="Введите имя"
+            aria-required="true"
+          />
+          <p class="task-form__hint" style="margin: 0.25rem 0 0; font-size: 0.78rem">Обязательное поле.</p>
+        </div>
+        <div class="task-form__field">
+          <label for="af-last-name"><i class="fa-solid fa-signature fa-fw" aria-hidden="true"></i>Фамилия</label>
+          <input id="af-last-name" name="lastName" type="text" maxlength="80" autocomplete="family-name" />
+          <p class="task-form__hint" style="margin: 0.25rem 0 0; font-size: 0.78rem">Необязательно: можно оставить пустым.</p>
+        </div>
+        <div class="task-form__field">
+          <label for="af-patronymic"><i class="fa-solid fa-user-tag fa-fw" aria-hidden="true"></i>Отчество</label>
+          <input id="af-patronymic" name="patronymic" type="text" maxlength="80" autocomplete="additional-name" />
+          <p class="task-form__hint" style="margin: 0.25rem 0 0; font-size: 0.78rem">По желанию.</p>
+        </div>
+        <div class="task-form__field">
+          <label for="af-photo"><i class="fa-solid fa-camera fa-fw" aria-hidden="true"></i>Фото для иконки</label>
+          <p class="task-form__hint" style="margin: 0 0 0.45rem; font-size: 0.78rem">JPEG, PNG, WebP или GIF, до 600 КБ. Показывается рядом с именем.</p>
+          <div class="assignee-form__photo-row">
+            <div
+              class="assignee-form__photo-preview assignee-form__photo-preview--empty"
+              id="af-photo-preview"
+              role="button"
+              tabindex="0"
+              title="Выбрать фото"
+              aria-label="Выбрать фото для иконки"
+            >
+              <i class="fa-solid fa-user" aria-hidden="true"></i>
+            </div>
+            <div class="assignee-form__photo-actions">
+              <input
+                type="file"
+                id="af-photo"
+                name="photo"
+                accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif"
+                class="assignee-form__file-input--sr"
+                tabindex="-1"
+              />
+              <button type="button" class="btn btn--ghost assignee-form__photo-pick" id="af-photo-pick">
+                <i class="fa-solid fa-image fa-fw" aria-hidden="true"></i>Выбрать фото
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="task-form__field">
+          <label for="af-email"><i class="fa-solid fa-envelope fa-fw" aria-hidden="true"></i>Email</label>
+          <input id="af-email" name="email" type="email" maxlength="120" autocomplete="email" inputmode="email" />
+          <p class="task-form__hint" style="margin: 0.25rem 0 0; font-size: 0.78rem">Необязательно.</p>
+        </div>
+        <div class="task-form__actions">
+          <button type="button" class="btn btn--ghost" id="assignee-form-cancel">
+            <i class="fa-solid fa-ban fa-fw" aria-hidden="true"></i>Отмена
+          </button>
+          <button type="submit" class="btn btn--primary" id="assignee-form-submit">
+            <i class="fa-solid fa-user-plus fa-fw" aria-hidden="true"></i>Добавить
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     function isoToday() {
       const d = new Date();
@@ -2736,7 +2988,99 @@
       },
     ];
 
-    const assignees = ["Анна", "Дмитрий", "Елена"];
+    const assignees = [
+      { id: "Анна", firstName: "Анна", lastName: "", patronymic: "", email: "", photoDataUrl: "" },
+      { id: "Дмитрий", firstName: "Дмитрий", lastName: "", patronymic: "", email: "", photoDataUrl: "" },
+      { id: "Елена", firstName: "Елена", lastName: "", patronymic: "", email: "", photoDataUrl: "" },
+    ];
+
+    const ASSIGNEE_PHOTO_MAX_BYTES = 600 * 1024;
+
+    function normalizeAssigneeFromStorage(x) {
+      if (typeof x === "string") {
+        const s = x.trim();
+        if (!s) return null;
+        return { id: s, firstName: s, lastName: "", patronymic: "", email: "", photoDataUrl: "" };
+      }
+      if (!x || typeof x !== "object") return null;
+      const id = String(x.id != null ? x.id : "").trim();
+      if (!id) return null;
+      const photo = typeof x.photoDataUrl === "string" && x.photoDataUrl.startsWith("data:image/") ? x.photoDataUrl : "";
+      return {
+        id,
+        firstName: String(x.firstName != null ? x.firstName : "").trim(),
+        lastName: String(x.lastName != null ? x.lastName : "").trim(),
+        patronymic: String(x.patronymic != null ? x.patronymic : "").trim(),
+        email: String(x.email != null ? x.email : "").trim(),
+        photoDataUrl: photo,
+      };
+    }
+
+    function assigneeIdExists(id) {
+      return assignees.some((a) => a.id === id);
+    }
+
+    function getAssigneeProfile(assigneeId) {
+      const p = assignees.find((a) => a.id === assigneeId);
+      if (p) return p;
+      if (!assigneeId) return { id: "", firstName: "", lastName: "", patronymic: "", email: "", photoDataUrl: "" };
+      return {
+        id: assigneeId,
+        firstName: String(assigneeId),
+        lastName: "",
+        patronymic: "",
+        email: "",
+        photoDataUrl: "",
+      };
+    }
+
+    function getAssigneeDisplayName(assigneeId) {
+      const p = getAssigneeProfile(assigneeId);
+      const parts = [p.lastName, p.firstName, p.patronymic].map((s) => String(s || "").trim()).filter(Boolean);
+      if (parts.length) return parts.join(" ");
+      if (p.email && String(p.email).trim()) return String(p.email).trim();
+      if (p.photoDataUrl) return "Без имени";
+      if (p.id && String(p.id).startsWith("asg-")) return "Участник";
+      return p.id || "";
+    }
+
+    function assigneeAvatarInnerHtml(profile, extraClass) {
+      const url = profile && profile.photoDataUrl;
+      const cls = ("assignee-avatar " + (extraClass || "")).trim();
+      if (url && /^data:image\//i.test(url)) {
+        const safe = url.replace(/"/g, "");
+        return `<span class="${cls} assignee-avatar--img"><img class="assignee-avatar__img" src="${safe}" alt="" draggable="false" decoding="async" /></span>`;
+      }
+      return `<span class="${cls} assignee-avatar--placeholder" aria-hidden="true"><i class="fa-solid fa-user"></i></span>`;
+    }
+
+    function assigneeChipHtml(assigneeId) {
+      const p = getAssigneeProfile(assigneeId);
+      const label = escapeHtml(getAssigneeDisplayName(assigneeId));
+      const av = assigneeAvatarInnerHtml(p, "assignee-avatar--sm");
+      return `<span class="assignee assignee--chip">${av}<span class="assignee__name">${label}</span></span>`;
+    }
+
+    function assigneeListNameRowHtml(profile) {
+      const name = escapeHtml(getAssigneeDisplayName(profile.id));
+      const av = assigneeAvatarInnerHtml(profile, "");
+      const idAttr = escapeAttr(profile.id);
+      const ariaName = escapeAttr(getAssigneeDisplayName(profile.id));
+      return `<button type="button" class="assignees-panel__name-edit" data-assignee-edit="${idAttr}" title="Редактировать данные ответственного" aria-label="Редактировать: ${ariaName}">
+        <span class="assignees-panel__name assignees-panel__name--with-avatar">${av}<span class="assignees-panel__name-text">${name}</span></span>
+      </button>`;
+    }
+
+    function allocateNewAssigneeId() {
+      let id;
+      do {
+        id = "asg-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+      } while (assigneeIdExists(id));
+      return id;
+    }
+
+    let assigneeModalPhotoDataUrl = "";
+    let assigneeModalEditingId = null;
 
     const trashTasks = [];
 
@@ -2804,12 +3148,9 @@
         const rawA = localStorage.getItem(LS_ASSIGNEES_KEY);
         if (rawA != null) {
           const parsedA = JSON.parse(rawA);
-          if (
-            Array.isArray(parsedA) &&
-            parsedA.length > 0 &&
-            parsedA.every((x) => typeof x === "string" && String(x).trim().length > 0)
-          ) {
-            assignees.splice(0, assignees.length, ...parsedA.map((x) => String(x).trim()));
+          if (Array.isArray(parsedA) && parsedA.length > 0) {
+            const normalized = parsedA.map(normalizeAssigneeFromStorage).filter(Boolean);
+            if (normalized.length) assignees.splice(0, assignees.length, ...normalized);
           }
         }
       } catch (e) {
@@ -2843,24 +3184,6 @@
     }
 
     loadAppStateFromStorage();
-
-    const ASSIGNEE_NEW_PLACEHOLDER_DEFAULT = "Имя ответственного";
-    const ASSIGNEE_NEW_PLACEHOLDER_EMPTY = "Введите имя ответственного";
-
-    function clearAssigneeNewInputErrorState(input) {
-      if (!input) return;
-      input.classList.remove("assignees-panel__input--error");
-      input.placeholder = ASSIGNEE_NEW_PLACEHOLDER_DEFAULT;
-      input.removeAttribute("aria-invalid");
-    }
-
-    function setAssigneeNewInputEmptyError(input) {
-      if (!input) return;
-      input.classList.add("assignees-panel__input--error");
-      input.placeholder = ASSIGNEE_NEW_PLACEHOLDER_EMPTY;
-      input.setAttribute("aria-invalid", "true");
-      input.focus();
-    }
 
     const priorityLabels = {
       high: "Высокий",
@@ -2924,10 +3247,20 @@
         .replace(/"/g, "&quot;");
     }
 
+    function escapeAttr(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;");
+    }
+
     function ensureAssigneesCoverTasks() {
       tasks.forEach((t) => {
-        if (t.assignee && !assignees.includes(t.assignee)) {
-          assignees.push(t.assignee);
+        const key = String(t.assignee || "").trim();
+        if (!key) return;
+        if (!assigneeIdExists(key)) {
+          const p = normalizeAssigneeFromStorage(key);
+          if (p) assignees.push(p);
         }
       });
     }
@@ -2940,18 +3273,20 @@
       const prevTf = tfEl.value;
 
       filterEl.innerHTML = `<option value="">Все</option>`;
-      assignees.forEach((name) => {
-        const val = escapeHtml(name);
-        filterEl.insertAdjacentHTML("beforeend", `<option value="${val}">${val}</option>`);
+      assignees.forEach((profile) => {
+        const val = escapeHtml(profile.id);
+        const label = escapeHtml(getAssigneeDisplayName(profile.id));
+        filterEl.insertAdjacentHTML("beforeend", `<option value="${val}">${label}</option>`);
       });
-      filterEl.value = prevFilter === "" || assignees.includes(prevFilter) ? prevFilter : "";
+      filterEl.value = prevFilter === "" || assigneeIdExists(prevFilter) ? prevFilter : "";
 
       tfEl.innerHTML = "";
-      assignees.forEach((name) => {
-        const val = escapeHtml(name);
-        tfEl.insertAdjacentHTML("beforeend", `<option value="${val}">${val}</option>`);
+      assignees.forEach((profile) => {
+        const val = escapeHtml(profile.id);
+        const label = escapeHtml(getAssigneeDisplayName(profile.id));
+        tfEl.insertAdjacentHTML("beforeend", `<option value="${val}">${label}</option>`);
       });
-      tfEl.value = assignees.includes(prevTf) ? prevTf : assignees[0] || "";
+      tfEl.value = assigneeIdExists(prevTf) ? prevTf : assignees[0] ? assignees[0].id : "";
 
       syncFilterSelectStyles();
     }
@@ -2972,8 +3307,9 @@
       const items = root.querySelectorAll(".assignees-panel__item");
       let visible = 0;
       items.forEach((li) => {
+        const raw = li.getAttribute("data-assignee-search") || "";
         const nameEl = li.querySelector(".assignees-panel__name-text");
-        const text = nameEl ? nameEl.textContent.trim().toLowerCase() : "";
+        const text = raw.trim().toLowerCase() || (nameEl ? nameEl.textContent.trim().toLowerCase() : "");
         const show = !q || text.includes(q);
         li.classList.toggle("assignees-panel__item--filtered-out", !show);
         if (show) visible++;
@@ -2994,7 +3330,8 @@
       const pMedL = escapeHtml(priorityLabels.medium);
       const pLowL = escapeHtml(priorityLabels.low);
       root.innerHTML = assignees
-        .map((name, idx) => {
+        .map((profile, idx) => {
+          const name = profile.id;
           const bySp = {
             todo: { high: 0, medium: 0, low: 0 },
             "in-progress": { high: 0, medium: 0, low: 0 },
@@ -3020,9 +3357,11 @@
               bucket.high,
               "high"
             )}${dig(bucket.medium, "medium")}${dig(bucket.low, "low")}</span></div>`;
-          return `<li class="assignees-panel__item">
+          const searchBlob =
+            `${getAssigneeDisplayName(profile.id)} ${profile.email} ${profile.firstName} ${profile.lastName} ${profile.patronymic}`.trim();
+          return `<li class="assignees-panel__item" data-assignee-search="${escapeAttr(searchBlob)}">
               <div class="assignees-panel__col">
-                <span class="assignees-panel__name"><i class="fa-solid fa-user fa-fw" aria-hidden="true"></i><span class="assignees-panel__name-text">${escapeHtml(name)}</span></span>
+                ${assigneeListNameRowHtml(profile)}
                 <div class="assignees-panel__stats assignees-panel__stats--status-pri" aria-label="По статусам: три цифры — высокий, средний, низкий приоритет">
                   ${grp(lt, bySp.todo)}
                   ${grp(lp, bySp["in-progress"])}
@@ -3048,9 +3387,9 @@
         alert("Нужен хотя бы один ответственный в списке.");
         return;
       }
-      const removed = assignees[index];
+      const removed = assignees[index].id;
       assignees.splice(index, 1);
-      const fallback = assignees[0];
+      const fallback = assignees[0].id;
       tasks.forEach((t) => {
         if (t.assignee === removed) t.assignee = fallback;
       });
@@ -3059,25 +3398,232 @@
       console.log("assignees:", assignees);
     }
 
-    function addAssigneeFromInput() {
-      const input = document.getElementById("assignee-new-input");
-      if (!input) return;
-      const raw = input.value.trim();
-      if (!raw) {
-        setAssigneeNewInputEmptyError(input);
-        return;
+    function resetAssigneeModalForm() {
+      const f = document.getElementById("assignee-form");
+      if (f) f.reset();
+      const afFirst = document.getElementById("af-first-name");
+      if (afFirst) {
+        afFirst.classList.remove("assignee-form__input--error");
+        afFirst.removeAttribute("aria-invalid");
       }
-      clearAssigneeNewInputErrorState(input);
-      if (assignees.includes(raw)) {
-        alert("Такой ответственный уже есть в списке.");
-        return;
+      assigneeModalPhotoDataUrl = "";
+      const prev = document.getElementById("af-photo-preview");
+      if (prev) {
+        prev.classList.add("assignee-form__photo-preview--empty");
+        prev.innerHTML = `<i class="fa-solid fa-user" aria-hidden="true"></i>`;
+        prev.removeAttribute("data-has-photo");
       }
-      assignees.push(raw);
-      input.value = "";
-      clearAssigneeNewInputErrorState(input);
-      fillAssigneeSelects();
-      refreshCurrentView();
-      console.log("assignees:", assignees);
+      const ph = document.getElementById("af-photo");
+      if (ph) ph.value = "";
+    }
+
+    function syncAssigneePhotoPreview() {
+      const prev = document.getElementById("af-photo-preview");
+      if (!prev) return;
+      if (assigneeModalPhotoDataUrl && /^data:image\//i.test(assigneeModalPhotoDataUrl)) {
+        const safe = assigneeModalPhotoDataUrl.replace(/"/g, "");
+        prev.classList.remove("assignee-form__photo-preview--empty");
+        prev.setAttribute("data-has-photo", "1");
+        prev.innerHTML = `<img src="${safe}" alt="" />`;
+      } else {
+        prev.classList.add("assignee-form__photo-preview--empty");
+        prev.removeAttribute("data-has-photo");
+        prev.innerHTML = `<i class="fa-solid fa-user" aria-hidden="true"></i>`;
+      }
+    }
+
+    function syncAssigneeModalChrome() {
+      const title = document.getElementById("assignee-modal-title");
+      const submit = document.getElementById("assignee-form-submit");
+      if (title) {
+        title.textContent = assigneeModalEditingId
+          ? `Редактирование: ${getAssigneeDisplayName(assigneeModalEditingId)}`
+          : "Новый ответственный";
+      }
+      if (submit) {
+        submit.innerHTML = assigneeModalEditingId
+          ? `<i class="fa-solid fa-floppy-disk fa-fw" aria-hidden="true"></i>Сохранить`
+          : `<i class="fa-solid fa-user-plus fa-fw" aria-hidden="true"></i>Добавить`;
+      }
+    }
+
+    function openAssigneeModalForEdit(profileId) {
+      const profile = assignees.find((a) => a.id === profileId);
+      if (!profile) return;
+      assigneeModalEditingId = profileId;
+      resetAssigneeModalForm();
+      const fn = document.getElementById("af-first-name");
+      const ln = document.getElementById("af-last-name");
+      const pat = document.getElementById("af-patronymic");
+      const em = document.getElementById("af-email");
+      if (fn) fn.value = profile.firstName || "";
+      if (ln) ln.value = profile.lastName || "";
+      if (pat) pat.value = profile.patronymic || "";
+      if (em) em.value = profile.email || "";
+      assigneeModalPhotoDataUrl =
+        profile.photoDataUrl && /^data:image\//i.test(String(profile.photoDataUrl))
+          ? String(profile.photoDataUrl)
+          : "";
+      syncAssigneePhotoPreview();
+      syncAssigneeModalChrome();
+      const bd = document.getElementById("assignee-modal-backdrop");
+      if (!bd) return;
+      bd.classList.add("is-open");
+      bd.setAttribute("aria-hidden", "false");
+      fn?.focus();
+    }
+
+    function openAssigneeModal() {
+      assigneeModalEditingId = null;
+      resetAssigneeModalForm();
+      syncAssigneeModalChrome();
+      const bd = document.getElementById("assignee-modal-backdrop");
+      if (!bd) return;
+      bd.classList.add("is-open");
+      bd.setAttribute("aria-hidden", "false");
+      document.getElementById("af-first-name")?.focus();
+    }
+
+    function closeAssigneeModal() {
+      const bd = document.getElementById("assignee-modal-backdrop");
+      if (!bd) return;
+      bd.classList.remove("is-open");
+      bd.setAttribute("aria-hidden", "true");
+      assigneeModalEditingId = null;
+      resetAssigneeModalForm();
+    }
+
+    function initAssigneeModal() {
+      const bd = document.getElementById("assignee-modal-backdrop");
+      const form = document.getElementById("assignee-form");
+      const closeBtn = document.getElementById("assignee-modal-close");
+      const cancelBtn = document.getElementById("assignee-form-cancel");
+      const photoInput = document.getElementById("af-photo");
+      const photoPick = document.getElementById("af-photo-pick");
+      const photoPreviewBtn = document.getElementById("af-photo-preview");
+      if (!bd || !form) return;
+      bd.addEventListener("click", (e) => {
+        if (e.target === bd) closeAssigneeModal();
+      });
+      if (closeBtn) closeBtn.addEventListener("click", () => closeAssigneeModal());
+      if (cancelBtn) cancelBtn.addEventListener("click", () => closeAssigneeModal());
+      const triggerPhotoPick = () => {
+        if (photoInput) photoInput.click();
+      };
+      if (photoPick && photoInput) {
+        photoPick.addEventListener("click", triggerPhotoPick);
+      }
+      if (photoPreviewBtn && photoInput) {
+        photoPreviewBtn.addEventListener("click", triggerPhotoPick);
+        photoPreviewBtn.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            triggerPhotoPick();
+          }
+        });
+      }
+      const afFirstName = document.getElementById("af-first-name");
+      if (afFirstName) {
+        afFirstName.addEventListener("input", () => {
+          if (afFirstName.value.trim()) {
+            afFirstName.classList.remove("assignee-form__input--error");
+            afFirstName.removeAttribute("aria-invalid");
+          }
+        });
+      }
+
+      if (photoInput) {
+        photoInput.addEventListener("change", async () => {
+          const file = photoInput.files && photoInput.files[0];
+          assigneeModalPhotoDataUrl = "";
+          if (!file) {
+            if (assigneeModalEditingId) {
+              const p = assignees.find((a) => a.id === assigneeModalEditingId);
+              assigneeModalPhotoDataUrl =
+                p && p.photoDataUrl && /^data:image\//i.test(String(p.photoDataUrl))
+                  ? String(p.photoDataUrl)
+                  : "";
+            }
+            syncAssigneePhotoPreview();
+            return;
+          }
+          if (!file.type.startsWith("image/")) {
+            const n = (file.name || "").toLowerCase();
+            if (!/\.(jpe?g|png|webp|gif)$/i.test(n)) {
+              alert("Выберите файл изображения (JPEG, PNG, WebP или GIF).");
+              photoInput.value = "";
+              syncAssigneePhotoPreview();
+              return;
+            }
+          }
+          if (file.size > ASSIGNEE_PHOTO_MAX_BYTES) {
+            alert(`Файл слишком большой. Максимум ${Math.round(ASSIGNEE_PHOTO_MAX_BYTES / 1024)} КБ.`);
+            photoInput.value = "";
+            syncAssigneePhotoPreview();
+            return;
+          }
+          try {
+            assigneeModalPhotoDataUrl = await readFileAsDataUrl(file);
+          } catch {
+            alert("Не удалось прочитать файл фото.");
+            photoInput.value = "";
+            assigneeModalPhotoDataUrl = "";
+          }
+          syncAssigneePhotoPreview();
+        });
+      }
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const firstNameEl = document.getElementById("af-first-name");
+        const firstName = firstNameEl ? firstNameEl.value.trim() : "";
+        if (!firstName) {
+          if (firstNameEl) {
+            firstNameEl.classList.add("assignee-form__input--error");
+            firstNameEl.setAttribute("aria-invalid", "true");
+            firstNameEl.focus();
+          }
+          return;
+        }
+        if (firstNameEl) {
+          firstNameEl.classList.remove("assignee-form__input--error");
+          firstNameEl.removeAttribute("aria-invalid");
+        }
+        const lastName = document.getElementById("af-last-name").value.trim();
+        const patronymic = document.getElementById("af-patronymic").value.trim();
+        const email = document.getElementById("af-email").value.trim();
+        const photo = assigneeModalPhotoDataUrl && /^data:image\//i.test(assigneeModalPhotoDataUrl) ? assigneeModalPhotoDataUrl : "";
+        if (assigneeModalEditingId) {
+          const idx = assignees.findIndex((a) => a.id === assigneeModalEditingId);
+          if (idx >= 0) {
+            Object.assign(assignees[idx], {
+              firstName,
+              lastName,
+              patronymic,
+              email,
+              photoDataUrl: photo,
+            });
+          }
+        } else {
+          const id = allocateNewAssigneeId();
+          assignees.push({
+            id,
+            firstName,
+            lastName,
+            patronymic,
+            email,
+            photoDataUrl: photo,
+          });
+        }
+        closeAssigneeModal();
+        fillAssigneeSelects();
+        refreshCurrentView();
+        console.log("assignees:", assignees);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        if (!bd.classList.contains("is-open")) return;
+        closeAssigneeModal();
+      });
     }
 
     function initAssigneesManager() {
@@ -3100,9 +3646,14 @@
 
       const list = document.getElementById("assignees-list");
       const addBtn = document.getElementById("assignee-add-btn");
-      const input = document.getElementById("assignee-new-input");
       if (list) {
         list.addEventListener("click", (e) => {
+          const editBtn = e.target.closest("[data-assignee-edit]");
+          if (editBtn) {
+            const id = editBtn.getAttribute("data-assignee-edit");
+            if (id) openAssigneeModalForEdit(id);
+            return;
+          }
           const btn = e.target.closest("[data-assignee-index]");
           if (!btn) return;
           const idx = parseInt(btn.getAttribute("data-assignee-index"), 10);
@@ -3111,24 +3662,17 @@
             alert("Нужен хотя бы один ответственный в списке.");
             return;
           }
-          const name = assignees[idx];
+          const nm = getAssigneeDisplayName(assignees[idx].id);
           openConfirmDeleteModal({
             title: "Удалить ответственного?",
-            message: `Удалить «${name}» из списка? Для задач с этим ответственным будет назначен другой исполнитель.`,
+            message: `Удалить «${nm}» из списка? Для задач с этим ответственным будет назначен другой исполнитель.`,
           }).then((ok) => {
             if (ok) removeAssigneeAt(idx);
           });
         });
       }
-      if (addBtn && input) {
-        addBtn.addEventListener("click", addAssigneeFromInput);
-        input.addEventListener("input", () => clearAssigneeNewInputErrorState(input));
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            addAssigneeFromInput();
-          }
-        });
+      if (addBtn) {
+        addBtn.addEventListener("click", () => openAssigneeModal());
       }
     }
 
@@ -3405,7 +3949,7 @@
           ${taskAttachmentsPreviewHtml(t)}
           <div class="task-card__footer">
             <span class="task-card__due${dueSpanClass}">до ${escapeHtml(t.dueDate)}</span>
-            <span class="assignee">${escapeHtml(t.assignee)}</span>
+            <span class="assignee">${assigneeChipHtml(t.assignee)}</span>
           </div>
         </article>
       `;
@@ -3486,7 +4030,7 @@
             ${priorityBadgeHtml(t)}
           </td>
           <td class="${tdDueClass}">${escapeHtml(t.dueDate)}</td>
-          <td><span class="assignee">${escapeHtml(t.assignee)}</span></td>
+          <td>${assigneeChipHtml(t.assignee)}</td>
           <td class="col-files">${taskTableAttachmentsCellHtml(t)}</td>
         </tr>
       `;
@@ -3529,7 +4073,7 @@
             <span class="task-list__priority task-list__priority--${t.priority}"><i class="${priIc}" aria-hidden="true"></i> ${escapeHtml(pri)}</span>
             <span class="${dueSpanClass}">${escapeHtml(t.dueDate)}</span>
             ${taskListAttachmentsHtml(t)}
-            <span class="task-list__assignee">${escapeHtml(t.assignee)}</span>
+            <span class="task-list__assignee">${assigneeChipHtml(t.assignee)}</span>
             ${deleteButtonHtml(t.id)}
           </div>
           ${sep}
@@ -3599,7 +4143,7 @@
           <td>${statusBadgeTableHtml(t)}</td>
           <td>${priorityBadgeHtml(t)}</td>
           <td class="${tdDueClass}">${escapeHtml(t.dueDate)}</td>
-          <td><span class="assignee">${escapeHtml(t.assignee)}</span></td>
+          <td>${assigneeChipHtml(t.assignee)}</td>
           <td class="col-files">${taskTableAttachmentsCellHtml(t)}</td>
         </tr>`;
         })
@@ -3927,7 +4471,7 @@
       syncTfPrioritySelectStyle();
       document.getElementById("tf-due").value = isoToday();
       syncTfDueOverdueHighlight();
-      document.getElementById("tf-assignee").value = assignees[0] || "";
+      document.getElementById("tf-assignee").value = assignees[0] ? assignees[0].id : "";
       taskModalAttachments = [];
       const attInput = document.getElementById("tf-attachment-input");
       if (attInput) attInput.value = "";
@@ -3987,6 +4531,7 @@
       document.addEventListener("keydown", (e) => {
         if (e.key !== "Escape" || !backdrop.classList.contains("is-open")) return;
         if (document.getElementById("confirm-modal-backdrop").classList.contains("is-open")) return;
+        if (document.getElementById("assignee-modal-backdrop").classList.contains("is-open")) return;
         closeTaskModal();
       });
       form.addEventListener("submit", (e) => {
@@ -4228,6 +4773,7 @@
     ensureAssigneesCoverTasks();
     fillAssigneeSelects();
     renderAssigneesPanel();
+    initAssigneeModal();
     initAssigneesManager();
 
     console.log("tasks:", tasks);
