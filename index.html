@@ -1661,25 +1661,34 @@
     }
 
     .filters-bar__field--search {
-      flex: 1 1 280px;
-      min-width: min(100%, 20rem);
+      flex: 1 1 14rem;
+      min-width: 0;
       flex-direction: row;
       flex-wrap: wrap;
       align-items: flex-end;
-      gap: 0.75rem 1.25rem;
+      gap: 0.65rem 1rem;
     }
 
     .filters-bar__search-col {
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
-      flex: 1 1 10rem;
       min-width: 0;
     }
 
     .filters-bar__search-col--date {
       flex: 0 0 auto;
-      min-width: 10.75rem;
+      min-width: 10.5rem;
+      width: min(100%, 11.25rem);
+    }
+
+    .filters-bar__search-col--title {
+      flex: 1 1 6rem;
+      min-width: 0;
+    }
+
+    .filters-bar__search-col--title input[type="search"] {
+      min-width: 0;
     }
 
     .filters-bar label {
@@ -1825,7 +1834,7 @@
         border-color 0.2s var(--ease-out),
         color 0.2s var(--ease-out),
         transform 0.2s var(--ease-out);
-      margin-left: auto;
+      flex-shrink: 0;
       align-self: flex-end;
     }
 
@@ -2393,19 +2402,20 @@
           </select>
         </div>
         <div class="filters-bar__field filters-bar__field--search">
-          <div class="filters-bar__search-col">
-            <label for="filter-search"><i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>Поиск по названию</label>
+          <div class="filters-bar__search-col filters-bar__search-col--date">
+            <label for="filter-due-date"><i class="fa-regular fa-calendar fa-fw" aria-hidden="true"></i>Поиск по дате</label>
+            <input id="filter-due-date" name="dueDateFilter" type="date" title="Показать задачи с выбранным сроком" />
+          </div>
+          <div class="filters-bar__search-col filters-bar__search-col--title">
+            <label for="filter-search"><i class="fa-solid fa-magnifying-glass fa-fw" aria-hidden="true"></i>По названию</label>
             <input
               id="filter-search"
               name="search"
               type="search"
-              placeholder="Введите текст…"
+              placeholder="Текст…"
               autocomplete="off"
+              title="Фильтр по названию задачи"
             />
-          </div>
-          <div class="filters-bar__search-col filters-bar__search-col--date">
-            <label for="filter-due-date"><i class="fa-regular fa-calendar fa-fw" aria-hidden="true"></i>Поиск по дате</label>
-            <input id="filter-due-date" name="dueDateFilter" type="date" title="Показать задачи с выбранным сроком" />
           </div>
         </div>
         <button type="button" class="filters-bar__reset" id="filter-reset">
