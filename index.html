@@ -1216,6 +1216,109 @@
       z-index: 1050;
     }
 
+    .modal-backdrop--assignee-stats {
+      z-index: 1060;
+    }
+
+    .modal--assignee-stats {
+      width: min(100%, 480px);
+    }
+
+    .assignee-stats-modal__profile {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.75rem;
+      min-width: 0;
+    }
+
+    .assignee-stats-modal__profile .assignee--chip {
+      pointer-events: none;
+      max-width: 100%;
+    }
+
+    .assignee-stats-modal__profile-text {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .assignee-stats-modal__profile-text .assignee-stats-modal__email {
+      margin-top: 0;
+    }
+
+    .assignee-stats-modal__count {
+      margin: 0 0 0.85rem;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .assignee-stats-modal__count strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .assignee-stats-modal__hint {
+      margin: 0 0 0.65rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .assignee-stats-modal__email {
+      margin: 0.35rem 0 0;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      word-break: break-word;
+    }
+
+    .assignee-stats-modal__stats-wrap {
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--bg);
+    }
+
+    .assignee-stats-modal__stats-wrap .assignees-panel__stats--status-pri {
+      margin-bottom: 0.45rem;
+    }
+
+    button.assignee.assignee--chip.assignee--chip--btn {
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: transparent;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      text-align: inherit;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    button.assignee.assignee--chip.assignee--chip--btn:hover {
+      color: var(--accent);
+    }
+
+    button.assignee.assignee--chip.assignee--chip--btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+      border-radius: var(--radius-sm);
+    }
+
+    button.assignee.assignee--chip.assignee--chip--btn .assignee__name {
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 0.12em;
+    }
+
+    button.assignee.assignee--chip.assignee--chip--btn:hover .assignee__name {
+      text-decoration-color: currentColor;
+    }
+
     .modal {
       width: min(100%, 420px);
       max-height: min(92vh, 640px);
@@ -2489,6 +2592,7 @@
     @media (prefers-reduced-motion: reduce) {
       .modal-backdrop,
       .modal-backdrop--confirm,
+      .modal-backdrop--assignee-stats,
       .modal,
       .task-card,
       .btn,
@@ -2908,6 +3012,21 @@
     </div>
   </div>
 
+  <div class="modal-backdrop modal-backdrop--assignee-stats" id="assignee-stats-modal-backdrop" aria-hidden="true">
+    <div class="modal modal--assignee-stats" role="dialog" aria-modal="true" aria-labelledby="assignee-stats-modal-title">
+      <button type="button" class="modal__close" id="assignee-stats-modal-close" aria-label="Закрыть">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+      <h2 class="modal__title" id="assignee-stats-modal-title">Статистика ответственного</h2>
+      <div id="assignee-stats-modal-body" class="assignee-stats-modal__body"></div>
+      <div class="task-form__actions" style="margin-top: 1rem; margin-bottom: 0">
+        <button type="button" class="btn btn--primary" id="assignee-stats-modal-ok">
+          <i class="fa-solid fa-check fa-fw" aria-hidden="true"></i>Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     function isoToday() {
       const d = new Date();
@@ -3058,7 +3177,9 @@
       const p = getAssigneeProfile(assigneeId);
       const label = escapeHtml(getAssigneeDisplayName(assigneeId));
       const av = assigneeAvatarInnerHtml(p, "assignee-avatar--sm");
-      return `<span class="assignee assignee--chip">${av}<span class="assignee__name">${label}</span></span>`;
+      const idAttr = escapeAttr(assigneeId);
+      const ariaNm = escapeAttr(getAssigneeDisplayName(assigneeId));
+      return `<button type="button" class="assignee assignee--chip assignee--chip--btn" data-assignee-stats="${idAttr}" title="Статистика задач по ответственному" aria-label="Статистика задач: ${ariaNm}">${av}<span class="assignee__name">${label}</span></button>`;
     }
 
     function assigneeListNameRowHtml(profile) {
@@ -3320,58 +3441,82 @@
       }
     }
 
-    function renderAssigneesPanel() {
-      const root = document.getElementById("assignees-list");
-      if (!root) return;
+    function computeAssigneeTaskStats(assigneeId) {
+      const name = String(assigneeId ?? "");
+      const bySp = {
+        todo: { high: 0, medium: 0, low: 0 },
+        "in-progress": { high: 0, medium: 0, low: 0 },
+        done: { high: 0, medium: 0, low: 0 },
+      };
+      let nHigh = 0;
+      let nMed = 0;
+      let nLow = 0;
+      let total = 0;
+      tasks.forEach((t) => {
+        if (t.assignee !== name) return;
+        total++;
+        const pr = t.priority;
+        if (pr !== "high" && pr !== "medium" && pr !== "low") return;
+        if (t.status === "todo") bySp.todo[pr]++;
+        else if (t.status === "in-progress") bySp["in-progress"][pr]++;
+        else if (t.status === "done") bySp.done[pr]++;
+        if (pr === "high") nHigh++;
+        else if (pr === "medium") nMed++;
+        else if (pr === "low") nLow++;
+      });
+      return { bySp, nHigh, nMed, nLow, total };
+    }
+
+    function assigneeStatsRowsFromBuckets(stats) {
+      const { bySp, nHigh, nMed, nLow } = stats;
       const lt = escapeHtml(statusLabels.todo);
       const lp = escapeHtml(statusLabels["in-progress"]);
       const ld = escapeHtml(statusLabels.done);
       const pHighL = escapeHtml(priorityLabels.high);
       const pMedL = escapeHtml(priorityLabels.medium);
       const pLowL = escapeHtml(priorityLabels.low);
+      const dig = (n, p) => `<span class="assignees-panel__dig assignees-panel__dig--${p}">${n}</span>`;
+      const grp = (label, bucket) =>
+        `<div class="assignees-panel__grp"><span class="assignees-panel__grp-label">${label}</span><span class="assignees-panel__dig-group" title="Высокий · Средний · Низкий">${dig(
+          bucket.high,
+          "high"
+        )}${dig(bucket.medium, "medium")}${dig(bucket.low, "low")}</span></div>`;
+      const statusRow =
+        `<div class="assignees-panel__stats assignees-panel__stats--status-pri" aria-label="По статусам: три цифры — высокий, средний, низкий приоритет">` +
+        `${grp(lt, bySp.todo)}${grp(lp, bySp["in-progress"])}${grp(ld, bySp.done)}</div>`;
+      const prioRow =
+        `<div class="assignees-panel__stats assignees-panel__stats--priority" aria-label="Всего по приоритету">` +
+        `<span class="assignees-panel__prio-sum"><span class="assignees-panel__prio-sum-label">${pHighL}</span> ${dig(nHigh, "high")}</span>` +
+        `<span class="assignees-panel__prio-sum"><span class="assignees-panel__prio-sum-label">${pMedL}</span> ${dig(nMed, "medium")}</span>` +
+        `<span class="assignees-panel__prio-sum"><span class="assignees-panel__prio-sum-label">${pLowL}</span> ${dig(nLow, "low")}</span></div>`;
+      return { statusRow, prioRow };
+    }
+
+    function pluralRuTasks(n) {
+      const abs = Math.abs(Number(n)) | 0;
+      const mod100 = abs % 100;
+      const mod10 = abs % 10;
+      if (mod100 > 10 && mod100 < 20) return "задач";
+      if (mod10 > 1 && mod10 < 5) return "задачи";
+      if (mod10 === 1) return "задача";
+      return "задач";
+    }
+
+    function renderAssigneesPanel() {
+      const root = document.getElementById("assignees-list");
+      if (!root) return;
       root.innerHTML = assignees
         .map((profile, idx) => {
           const name = profile.id;
-          const bySp = {
-            todo: { high: 0, medium: 0, low: 0 },
-            "in-progress": { high: 0, medium: 0, low: 0 },
-            done: { high: 0, medium: 0, low: 0 },
-          };
-          let nHigh = 0;
-          let nMed = 0;
-          let nLow = 0;
-          tasks.forEach((t) => {
-            if (t.assignee !== name) return;
-            const pr = t.priority;
-            if (pr !== "high" && pr !== "medium" && pr !== "low") return;
-            if (t.status === "todo") bySp.todo[pr]++;
-            else if (t.status === "in-progress") bySp["in-progress"][pr]++;
-            else if (t.status === "done") bySp.done[pr]++;
-            if (pr === "high") nHigh++;
-            else if (pr === "medium") nMed++;
-            else if (pr === "low") nLow++;
-          });
-          const dig = (n, p) => `<span class="assignees-panel__dig assignees-panel__dig--${p}">${n}</span>`;
-          const grp = (label, bucket) =>
-            `<div class="assignees-panel__grp"><span class="assignees-panel__grp-label">${label}</span><span class="assignees-panel__dig-group" title="Высокий · Средний · Низкий">${dig(
-              bucket.high,
-              "high"
-            )}${dig(bucket.medium, "medium")}${dig(bucket.low, "low")}</span></div>`;
+          const stats = computeAssigneeTaskStats(name);
+          const { statusRow, prioRow } = assigneeStatsRowsFromBuckets(stats);
           const searchBlob =
             `${getAssigneeDisplayName(profile.id)} ${profile.email} ${profile.firstName} ${profile.lastName} ${profile.patronymic}`.trim();
           return `<li class="assignees-panel__item" data-assignee-search="${escapeAttr(searchBlob)}">
               <div class="assignees-panel__col">
                 ${assigneeListNameRowHtml(profile)}
-                <div class="assignees-panel__stats assignees-panel__stats--status-pri" aria-label="По статусам: три цифры — высокий, средний, низкий приоритет">
-                  ${grp(lt, bySp.todo)}
-                  ${grp(lp, bySp["in-progress"])}
-                  ${grp(ld, bySp.done)}
-                </div>
-                <div class="assignees-panel__stats assignees-panel__stats--priority" aria-label="Всего по приоритету">
-                  <span class="assignees-panel__prio-sum"><span class="assignees-panel__prio-sum-label">${pHighL}</span> ${dig(nHigh, "high")}</span>
-                  <span class="assignees-panel__prio-sum"><span class="assignees-panel__prio-sum-label">${pMedL}</span> ${dig(nMed, "medium")}</span>
-                  <span class="assignees-panel__prio-sum"><span class="assignees-panel__prio-sum-label">${pLowL}</span> ${dig(nLow, "low")}</span>
-                </div>
+                ${statusRow}
+                ${prioRow}
               </div>
               <button type="button" class="btn btn--ghost btn--icon assignees-panel__remove" data-assignee-index="${idx}" aria-label="Удалить ответственного"><i class="fa-solid fa-trash-can" aria-hidden="true"></i></button>
             </li>`;
@@ -3624,6 +3769,73 @@
         if (!bd.classList.contains("is-open")) return;
         closeAssigneeModal();
       });
+    }
+
+    function buildAssigneeStatsModalBodyHtml(assigneeId) {
+      const stats = computeAssigneeTaskStats(assigneeId);
+      const { statusRow, prioRow } = assigneeStatsRowsFromBuckets(stats);
+      const p = getAssigneeProfile(assigneeId);
+      const display = escapeHtml(getAssigneeDisplayName(assigneeId));
+      const av = assigneeAvatarInnerHtml(p, "assignee-avatar--sm");
+      const chip = `<span class="assignee assignee--chip">${av}<span class="assignee__name">${display}</span></span>`;
+      const em = p.email && String(p.email).trim();
+      const emailLine = em ? `<p class="assignee-stats-modal__email">${escapeHtml(String(em))}</p>` : "";
+      const pw = pluralRuTasks(stats.total);
+      return (
+        `<div class="assignee-stats-modal__profile">` +
+        chip +
+        (emailLine ? `<div class="assignee-stats-modal__profile-text">${emailLine}</div>` : "") +
+        `</div>` +
+        `<p class="assignee-stats-modal__count">Всего задач с этим ответственным: <strong>${stats.total}</strong> ${pw}.</p>` +
+        `<p class="assignee-stats-modal__hint">По статусам и приоритетам — как в блоке «Ответственные» под канбаном (три цифры в каждой колонке: высокий, средний и низкий приоритет).</p>` +
+        `<div class="assignee-stats-modal__stats-wrap">${statusRow}${prioRow}</div>`
+      );
+    }
+
+    function openAssigneeStatsModal(assigneeId) {
+      const bd = document.getElementById("assignee-stats-modal-backdrop");
+      const body = document.getElementById("assignee-stats-modal-body");
+      const title = document.getElementById("assignee-stats-modal-title");
+      if (!bd || !body) return;
+      if (title) title.textContent = getAssigneeDisplayName(assigneeId);
+      body.innerHTML = buildAssigneeStatsModalBodyHtml(assigneeId);
+      bd.classList.add("is-open");
+      bd.setAttribute("aria-hidden", "false");
+      requestAnimationFrame(() => {
+        document.getElementById("assignee-stats-modal-close")?.focus();
+      });
+    }
+
+    function closeAssigneeStatsModal() {
+      const bd = document.getElementById("assignee-stats-modal-backdrop");
+      const body = document.getElementById("assignee-stats-modal-body");
+      if (!bd) return;
+      bd.classList.remove("is-open");
+      bd.setAttribute("aria-hidden", "true");
+      if (body) body.innerHTML = "";
+    }
+
+    function initAssigneeStatsModal() {
+      const bd = document.getElementById("assignee-stats-modal-backdrop");
+      const closeBtn = document.getElementById("assignee-stats-modal-close");
+      const okBtn = document.getElementById("assignee-stats-modal-ok");
+      if (!bd) return;
+      if (closeBtn) closeBtn.addEventListener("click", () => closeAssigneeStatsModal());
+      if (okBtn) okBtn.addEventListener("click", () => closeAssigneeStatsModal());
+      bd.addEventListener("click", (e) => {
+        if (e.target === bd) closeAssigneeStatsModal();
+      });
+      document.addEventListener(
+        "keydown",
+        (e) => {
+          if (e.key !== "Escape") return;
+          if (!bd.classList.contains("is-open")) return;
+          e.preventDefault();
+          e.stopPropagation();
+          closeAssigneeStatsModal();
+        },
+        true
+      );
     }
 
     function initAssigneesManager() {
@@ -4532,6 +4744,7 @@
         if (e.key !== "Escape" || !backdrop.classList.contains("is-open")) return;
         if (document.getElementById("confirm-modal-backdrop").classList.contains("is-open")) return;
         if (document.getElementById("assignee-modal-backdrop").classList.contains("is-open")) return;
+        if (document.getElementById("assignee-stats-modal-backdrop").classList.contains("is-open")) return;
         closeTaskModal();
       });
       form.addEventListener("submit", (e) => {
@@ -4642,6 +4855,15 @@
           return;
         }
 
+        const statsBtn = e.target.closest("[data-assignee-stats]");
+        if (statsBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          const aid = statsBtn.getAttribute("data-assignee-stats");
+          if (aid != null && aid !== "") openAssigneeStatsModal(aid);
+          return;
+        }
+
         const editHost = e.target.closest(".task-open-edit[data-task-id]");
         if (editHost && !e.target.closest("[data-task-delete]")) {
           const id = Number(editHost.dataset.taskId);
@@ -4725,7 +4947,7 @@
       const root = document.getElementById("kanban-root");
 
       root.addEventListener("dragstart", (e) => {
-        if (e.target.closest("[data-task-delete], .task-title-btn, .task-attachment-save")) {
+        if (e.target.closest("[data-task-delete], .task-title-btn, .task-attachment-save, [data-assignee-stats]")) {
           e.preventDefault();
           return;
         }
@@ -4774,6 +4996,7 @@
     fillAssigneeSelects();
     renderAssigneesPanel();
     initAssigneeModal();
+    initAssigneeStatsModal();
     initAssigneesManager();
 
     console.log("tasks:", tasks);
